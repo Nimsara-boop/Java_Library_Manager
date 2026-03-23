@@ -1,0 +1,64 @@
+---
+- name: Deploy Library Manager
+  hosts: servers
+  become: yes
+
+  vars:
+    app_dir: "/home/ubuntu/library-manager"
+    app_user: "ubuntu"
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Java 17
+      apt:
+        name: openjdk-17-jdk
+        state: present
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start and enable Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull latest code
+      git:
+        repo: "https://github.com/Nimsara-boop/YOUR_ACTUAL_REPO_NAME.git"
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+      become_user: "{{ app_user }}"
+
+    - name: Build Docker image
+      command: docker build -t library-manager .
+      args:
+        chdir: "{{ app_dir }}"
+
+    - name: Stop existing container
+      command: docker stop library-manager
+      ignore_errors: yes
+
+    - name: Remove existing container
+      command: docker rm library-manager
+      ignore_errors: yes
+
+    - name: Run container on port 8081
+      command: >
+        docker run -d
+        -p 8081:8080
+        --name library-manager
+        --restart always
+        library-manager
