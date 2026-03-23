@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Compile app
-        run: javac src/main/java/librarycentre_package/WestminsterLibraryManager.java
+        run: javac src/main/java/librarycentre_package/*.java
 
       - name: Deploy via Ansible on EC2
         uses: appleboy/ssh-action@v1.0.0
