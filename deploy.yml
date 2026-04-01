@@ -36,7 +36,7 @@
 
     - name: Pull latest code
       git:
-        repo: "https://github.com/Nimsara-boop/YOUR_ACTUAL_REPO_NAME.git"
+        repo: "https://github.com/Nimsara-boop/Java_Library_Manager.git"
         dest: "{{ app_dir }}"
         version: main
         force: yes
